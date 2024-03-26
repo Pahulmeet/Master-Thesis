@@ -1,0 +1,338 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src='https://cdn.plot.ly/plotly-2.14.0.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js'></script>
+
+<div id="tester"></div>
+
+<script>
+    var data = {{ JSON_data | safe }};
+    //var data1 = JSON.parse({{JSON_data}});
+    console.log(Object.values(data));
+    console.log(typeof (data[0]["phi1"]));
+    console.log(Object.keys(data).length);
+
+
+
+    document.getElementById("state1").value = data[0]['s1'];
+    document.getElementById("state2").value = data[0]['s2'];
+    document.getElementById("conclusion").value = data[0]['s3'];
+    document.getElementById("step").value = data[0]['step1'];
+    xn = [];
+    yn = [];
+    zn = [];
+    rho = 1.0;
+    for (var i = 0.0; i <= 6.282; i += 0.05) {
+        for (var j = 0.0; j <= 3.141; j += 0.05) {
+            x_temp = rho * Math.sin(j) * Math.cos(i);
+            y_temp = rho * Math.sin(j) * Math.sin(i);
+            z_temp = rho * Math.cos(j);
+
+            xn.push(x_temp);
+            yn.push(y_temp);
+            zn.push(z_temp);
+        }
+    }
+    var trace = {
+        x: xn, y: yn, z: zn,
+        mode: 'markers',
+        name: 'Sphere',
+        marker: {
+            size: 2,
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 0.1
+        },
+        type: 'scatter3d'
+    };
+
+    function distance_between_points(c, dot_x, dot_y, dot_z) {
+        d = rho * Math.acos((c[0] * dot_x + c[1] * dot_y + c[2] * dot_z) / (rho * rho));
+        return d;
+    }
+
+
+
+    if (data[0].loss !== 129) {
+
+        var i1 = 0;
+        chz = 2;
+        const iters = setInterval(function () {
+            var data = {{ JSON_data | safe
+        }};
+    var counter1 = Object.keys(data).length;
+    console.log(counter1);
+    console.log(i1);
+    console.log(data[0]["phi1"]);
+    x_temp1 = rho * Math.sin(data[i1]["phi1"]) * Math.cos(data[i1]["theta1"]);
+    y_temp1 = rho * Math.sin(data[i1]["phi1"]) * Math.sin(data[i1]["theta1"]);
+    z_temp1 = rho * Math.cos(data[i1]["phi1"]);
+    r1 = rho * Math.PI * (data[i1]["alpha1"] / 360);
+    console.log(x_temp1);
+    x_temp2 = rho * Math.sin(data[i1]["phi2"]) * Math.cos(data[i1]["theta2"]);
+    y_temp2 = rho * Math.sin(data[i1]["phi2"]) * Math.sin(data[i1]["theta2"]);
+    z_temp2 = rho * Math.cos(data[i1]["phi2"]);
+    r2 = rho * Math.PI * (data[i1]["alpha2"] / 360);
+    x_temp3 = rho * Math.sin(data[i1]["phi3"]) * Math.cos(data[i1]["theta3"]);
+    y_temp3 = rho * Math.sin(data[i1]["phi3"]) * Math.sin(data[i1]["theta3"]);
+    z_temp3 = rho * Math.cos(data[i1]["phi3"]);
+    r3 = rho * Math.PI * (data[i1]["alpha3"] / 360);
+
+
+    c7 = [x_temp1, y_temp1, z_temp1, r1];
+    x7 = [];
+    y7 = [];
+    z7 = [];
+    for (var i = 0; i < xn.length; i += 1) {
+        d = distance_between_points(c7, xn[i], yn[i], zn[i]);
+        if (d <= c7[3]) {
+            x7.push(xn[i]);
+            y7.push(yn[i]);
+            z7.push(zn[i]);
+        }
+    }
+    var trace7 = {
+        x: x7, y: y7, z: z7,
+        mode: 'markers',
+        name: 'S Cone',
+        marker: {
+            size: 7,
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 0.8
+        },
+        type: 'scatter3d'
+    };
+
+
+    c8 = [x_temp2, y_temp2, z_temp2, r2];
+    x8 = [];
+    y8 = [];
+    z8 = [];
+    for (var i = 0; i < xn.length; i += 1) {
+        d = distance_between_points(c8, xn[i], yn[i], zn[i]);
+        if (d <= c8[3]) {
+            x8.push(xn[i]);
+            y8.push(yn[i]);
+            z8.push(zn[i]);
+        }
+    }
+    var trace8 = {
+        x: x8, y: y8, z: z8,
+        mode: 'markers',
+        name: 'M Cone',
+        marker: {
+            size: 7,
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 0.8
+        },
+        type: 'scatter3d'
+    };
+
+
+    c9 = [x_temp3, y_temp3, z_temp3, r3];
+    x9 = [];
+    y9 = [];
+    z9 = [];
+    for (var i = 0; i < xn.length; i += 1) {
+        d = distance_between_points(c9, xn[i], yn[i], zn[i]);
+        if (d <= c9[3]) {
+            x9.push(xn[i]);
+            y9.push(yn[i]);
+            z9.push(zn[i]);
+        }
+    }
+    var trace9 = {
+        x: x9, y: y9, z: z9,
+        mode: 'markers',
+        name: 'P Cone',
+        marker: {
+            size: 8,
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 0.8
+        },
+        type: 'scatter3d'
+    };
+    if (data[0]["notS"] == 1 && data[0]["notM"] == 0 && data[0]["notP"] == 0) {
+        trace7.name = "~S"
+    }
+    else if (data[0]["notS"] == 0 && data[0]["notM"] == 2 && data[0]["notP"] == 0) {
+        trace8.name = "~M"
+    }
+    else if (data[0]["notS"] == 0 && data[0]["notM"] == 0 && data[0]["notP"] == 3) {
+        trace9.name = "~P"
+    }
+    else if (data[0]["notS"] == 1 && data[0]["notM"] == 2 && data[0]["notP"] == 0) {
+        trace7.name = "~S"
+        trace8.name = "~M"
+    }
+    else if (data[0]["notS"] == 1 && data[0]["notM"] == 0 && data[0]["notP"] == 3) {
+        trace7.name = "~S"
+        trace9.name = "~P"
+
+    }
+    else if (data[0]["notS"] == 1 && data[0]["notM"] == 2 && data[0]["notP"] == 3) {
+        trace7.name = "~S"
+        trace8.name = "~M"
+        trace9.name = "~P"
+
+    }
+    else if (data[0]["notS"] == 0 && data[0]["notM"] == 2 && data[0]["notP"] == 3) {
+        trace8.name = "~M"
+        trace9.name = "~P"
+    }
+    else if (data[0]["notS"] === 0 && data[0]["notM"] === 0 && data[0]["notP"] === 0) {
+        trace7.name = "S Cone"
+        trace8.name = "M Cone"
+        trace9.name = "P Cone"
+    }
+
+
+    var data1 = [trace, trace7, trace8, trace9];
+    var layout = {
+        margin: {
+            l: 0,
+            r: 0,
+            b: 0,
+            t: 0
+        },
+        showlegend: true,
+        legend: {
+            x: 1,
+            xanchor: 'right',
+            y: 0.5,
+            font: {
+                family: 'sans-serif',
+                size: 28,
+                color: '#000'
+            },
+        }
+    };
+    //fig = Plotly.newPlot('tester', data, layout);
+
+    if (chz == 2) {
+        Plotly.newPlot('tester', data1, layout);
+
+        i1 = i1 + 1;
+        if (i1 >= counter1) {
+            var layout = {
+                margin: {
+                    l: 0,
+                    r: 0,
+                    b: 0,
+                    t: 0
+                },
+                //paper_bgcolor:'rgb(0,0,0)',
+                plot_bgcolor: 'rgb(17,40,235)',
+                showlegend: true,
+                legend: {
+                    x: 1,
+                    xanchor: 'right',
+                    y: 0.5,
+                    font: {
+                        family: 'sans-serif',
+                        size: 28,
+                        color: '#000'
+                    },
+                }
+            };
+            trace.marker.size = 2;
+            trace.marker.opacity = 0.1;
+            trace.marker.name = "Sphere"
+            //fig = Plotly.newPlot('tester', data, layout);
+            Plotly.newPlot('tester', data1, layout);
+            clearInterval(iters);
+        }
+    }
+    }, 50);
+        }
+
+    if (data[0].loss === 129) {
+        c7 = [5.75846527, 2.25265445, 80.0];
+        x7 = rho * Math.sin(c7[1]) * Math.cos(c7[0])
+        y7 = rho * Math.sin(c7[1]) * Math.sin(c7[0])
+        z7 = rho * Math.cos(c7[1])
+        r7 = rho * Math.PI * (c7[2] / 360)
+        c77 = [x7, y7, z7, r7]
+        gx = [];
+        gy = [];
+        gz = [];
+        for (var i = 0; i < xn.length; i += 1) {
+            d = distance_between_points(c77, xn[i], yn[i], zn[i]);
+            if (d <= r7) {
+                gx.push(xn[i]);
+                gy.push(yn[i]);
+                gz.push(zn[i]);
+            }
+        }
+        var traceX1 = {
+            x: gx, y: gy, z: gz,
+            mode: 'markers',
+            name: 'S,M,P Cone',
+            marker: {
+                size: 7, // 3.8
+                line: {
+                    color: 'rgba(217, 217, 217, 0.14)',
+                    width: 0.5
+                },
+                opacity: 0.8
+            },
+            type: 'scatter3d'
+        };
+        var data1 = [trace, traceX1];
+    }
+
+    var layout = {
+        margin: {
+            l: 0,
+            r: 0,
+            b: 0,
+            t: 0
+        },
+        //paper_bgcolor:'rgb(0,0,0)',
+        showlegend: true,
+        legend: {
+            x: 1,
+            xanchor: 'right',
+            y: 0.5,
+            font: {
+                family: 'sans-serif',
+                size: 28,
+                color: '#000'
+            },
+        }
+    };
+    fig = Plotly.newPlot('tester', data1, layout);
+
+</script>
+
+<div>
+    <p style="font-size: 32px; font-family:Arial, Helvetica, sans-serif; color:#4CAF50;; text-align:center;" id="demo2">
+    </p>
+    <script>
+        if (data[0].loss === 0) {
+            document.getElementById("demo2").innerHTML = "Success - Satisfiable || No. of Iterations : " + data[0].iter1;
+        }
+        else if (data[0].loss === 129) {
+            document.getElementById("demo2").innerHTML = "Success - All Cones coincide || No. of Iterations : " + data[0].iter1;
+        }
+        else {
+            document.getElementById("demo2").innerHTML = "Failure - NOT satisfiable || No. of Iterations : " + data[0].iter1;
+        } 
+    </script>
+</div>
+<h3>Note: Click on the Legend to make a Cone Appear OR Disappear</h3>
+{% endblock %}

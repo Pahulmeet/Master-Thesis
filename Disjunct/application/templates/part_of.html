@@ -1,0 +1,170 @@
+{% extends 'layout.html' %}
+{% block content %}
+    
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src='https://cdn.plot.ly/plotly-2.14.0.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js'></script>
+
+    <div id="tester"></div>
+
+    <script>
+        var data = {{ JSON_data | safe }};
+        //var data1 = JSON.parse({{JSON_data}});
+        console.log(Object.values(data));
+        console.log(typeof(data[0]["phi1"]));
+        console.log(Object.keys(data).length);
+
+        xn = [];
+        yn = [];
+        zn = [];
+        rho = 1.0;
+        for (var i = 0.0; i <= 6.282; i += 0.05)
+        {
+            for (var j = 0.0; j <= 3.141; j +=0.05)
+            {
+                x_temp = rho*Math.sin(j)*Math.cos(i);
+                y_temp = rho*Math.sin(j)*Math.sin(i);
+                z_temp = rho*Math.cos(j);
+
+                xn.push(x_temp);
+                yn.push(y_temp);
+                zn.push(z_temp);
+            }
+        }
+        var trace = {
+            x:xn, y: yn, z:zn,
+            mode: 'markers',
+            marker: {
+                size: 2,
+                line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5},
+                opacity: 0.1},
+            type: 'scatter3d'
+        };
+
+        function distance_between_points(c, dot_x, dot_y, dot_z)
+        {
+            d = rho*Math.acos((c[0]*dot_x + c[1]*dot_y + c[2]*dot_z)/(rho*rho));
+            return d;
+        }
+        
+        var i1 = 0;
+        chz = 2;
+        const iters = setInterval(function(){
+            var data = {{ JSON_data | safe }};
+            var counter1 = Object.keys(data).length;
+            console.log(counter1);
+            console.log(i1);
+            console.log(data[0]["phi1"]);
+            x_temp1 = rho*Math.sin(data[i1]["phi1"])*Math.cos(data[i1]["theta1"]);
+            y_temp1 = rho*Math.sin(data[i1]["phi1"])*Math.sin(data[i1]["theta1"]);
+            z_temp1 = rho*Math.cos(data[i1]["phi1"]);
+            r1 = rho*Math.PI*(data[i1]["alpha1"]/360);
+            console.log(x_temp1);
+            x_temp2 = rho*Math.sin(data[i1]["phi2"])*Math.cos(data[i1]["theta2"]);
+            y_temp2 = rho*Math.sin(data[i1]["phi2"])*Math.sin(data[i1]["theta2"]);
+            z_temp2 = rho*Math.cos(data[i1]["phi2"]);
+            r2 = rho*Math.PI*(data[i1]["alpha2"]/360);
+
+
+            c7 = [x_temp1, y_temp1, z_temp1, r1];
+            x7 = [];
+            y7 = [];
+            z7 = [];
+            for (var i = 0; i < xn.length; i += 1)
+            {
+                d = distance_between_points(c7,xn[i], yn[i], zn[i]);
+                if(d <= c7[3])
+                {
+                    x7.push(xn[i]);
+                    y7.push(yn[i]);
+                    z7.push(zn[i]);
+                } 
+            }
+            var trace7 = {
+                x:x7, y: y7, z:z7,
+                mode: 'markers',
+                marker: {
+                    size: 4,
+                    line: {
+                    color: 'rgba(217, 217, 217, 0.14)',
+                    width: 0.5},
+                    opacity: 0.8},
+                type: 'scatter3d'
+            };   
+
+
+            c8 = [x_temp2, y_temp2, z_temp2, r2];
+            x8 = [];
+            y8 = [];
+            z8 = [];
+            for (var i = 0; i < xn.length; i += 1)
+            {
+                d = distance_between_points(c8,xn[i], yn[i], zn[i]);
+                if(d <= c8[3])
+                {
+                    x8.push(xn[i]);
+                    y8.push(yn[i]);
+                    z8.push(zn[i]);
+                } 
+            }
+            var trace8 = {
+                x:x8, y: y8, z:z8,
+                mode: 'markers',
+                marker: {
+                    size: 4,
+                    line: {
+                    color: 'rgba(217, 217, 217, 0.14)',
+                    width: 0.5},
+                    opacity: 0.8},
+                type: 'scatter3d'
+            };   
+
+            var data = [trace, trace7, trace8];
+            var layout = {margin: {
+                l: 0,
+                r: 0,
+                b: 0,
+                t: 0
+            },
+            showlegend: true,
+            legend: {
+                x: 1,
+                xanchor: 'right',
+                y: 0.5
+            }};
+            
+            //fig = Plotly.newPlot('tester', data, layout);
+            
+            if(chz == 2){
+                Plotly.newPlot('tester', data, layout);
+
+            i1 = i1+25;
+            if (i1 >= counter1) {
+                var layout = {margin: {
+                    l: 0,
+                    r: 0,
+                    b: 0,
+                    t: 0
+                },
+                paper_bgcolor:'rgb(0,0,0)',
+                plot_bgcolor:'rgb(17,40,235)',
+                showlegend: true,
+                legend: {
+                    x: 1,
+                    xanchor: 'right',
+                    y: 0.5
+                }};
+                trace.marker.size=2;
+                trace.marker.opacity=0.1;
+                fig = Plotly.newPlot('tester', data, layout);
+                Plotly.newPlot('tester', data, layout);
+                clearInterval(iters);
+            }
+            }
+        },50);
+    </script>
+
+{% endblock %}

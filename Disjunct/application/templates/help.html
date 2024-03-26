@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src='https://cdn.plot.ly/plotly-2.14.0.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js'></script>
+
+
+<h3>
+    Guidelines for entering Correct text
+</h3>
+<h2>
+    ----------------------------------------------
+</h2>
+<h4>&#x2022;Subject, Middle and Predicate</h4>
+<h5>
+    1. Subject is represented as "S"
+</h5>
+<h5>
+    2. Middle is represented as "M"
+</h5>
+<h5>
+    3. Predicate is represented as "P"
+</h5>
+<h4>&#x2022; Types of statements possible:
+</h4>
+<h5>
+    1. All S are M
+</h5>
+<h5>
+    2. No S are M
+</h5>
+<h5>
+    3. Some S are M
+</h5>
+<h5>
+    4. Some S are not M
+</h5>
+
+<h4>&#x2022; For Negation use the Symbol"~" without any whitespace as in example below:
+</h4>
+<h5>
+    Statement 1: All S are ~M
+</h5>
+<h5>
+    Statement 2: All ~M are P
+</h5>
+<h5>
+    Conclusion: All S are P
+</h5>
+<h4>&#x2022; First Statement:</h4>
+<h5>1. You can switch between Subject(S) and Middle(M)</h5>
+<h5>2. Example1: All S are M</h5>
+<h5>3. Example2: All M are S</h5>
+
+<h4>&#x2022; Second Statement:</h4>
+<h5>1. You can switch between Middle(M) and Predicate(P)</h5>
+<h5>2. Example1: Some M are not P</h5>
+<h5>3. Example2: Some P are M</h5>
+</h5>
+<h4>&#x2022; Conclusion:</h4>
+<h5>1. You CANNOT switch between Subject(S) and Middle(M)</h5>
+<h5>2. Example1: All S are P</h5>
+<h5>3. Example2: Some S are P</h5>
+</h5>
+<h2>
+    ---------------------------------------------------------
+</h2>
+
+
+{% endblock %}

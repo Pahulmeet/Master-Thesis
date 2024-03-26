@@ -1,0 +1,163 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src='https://cdn.plot.ly/plotly-2.14.0.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js'></script>
+
+
+
+<script>
+    var data = {{ JSON_data | safe }};
+    //var data1 = JSON.parse({{JSON_data}});
+    console.log(Object.values(data));
+    console.log(typeof (data[0]["X_axis"]));
+
+    xn = [];
+    yn = [];
+    zn = [];
+    rho = 1.0;
+    for (var i = 0.0; i <= 6.282; i += 0.05) {
+        for (var j = 0.0; j <= 3.141; j += 0.05) {
+            x_temp = rho * Math.sin(j) * Math.cos(i);
+            y_temp = rho * Math.sin(j) * Math.sin(i);
+            z_temp = rho * Math.cos(j);
+
+            xn.push(x_temp);
+            yn.push(y_temp);
+            zn.push(z_temp);
+        }
+    }
+
+    var trace = {
+        x: xn, y: yn, z: zn,
+        mode: 'markers',
+        name: 'Sphere',
+        marker: {
+            size: 2,
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 0.1
+        },
+        type: 'scatter3d'
+    };
+
+    function distance_between_points(c, dot_x, dot_y, dot_z) {
+        d = rho * Math.acos((c[0] * dot_x + c[1] * dot_y + c[2] * dot_z) / (rho * rho));
+        return d;
+    }
+
+    c2 = [data[0]["X_axis"], data[0]["Y_axis"], data[0]["Z_axis"], data[0]["Radius"]];
+    bx = [];
+    by = [];
+    bz = [];
+    for (var i = 0; i < xn.length; i += 1) {
+        d = distance_between_points(c2, xn[i], yn[i], zn[i]);
+        if (d <= c2[3]) {
+            bx.push(xn[i]);
+            by.push(yn[i]);
+            bz.push(zn[i]);
+        }
+    }
+    var trace2 = {
+        x: bx, y: by, z: bz,
+        mode: 'markers',
+        name: 'Cone 1',
+        marker: {
+            size: 4,
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 0.8
+        },
+        type: 'scatter3d'
+    };
+
+    c3 = [data[1]["X_axis"], data[1]["Y_axis"], data[1]["Z_axis"], data[1]["Radius"]];
+    gx = [];
+    gy = [];
+    gz = [];
+    for (var i = 0; i < xn.length; i += 1) {
+        d = distance_between_points(c3, xn[i], yn[i], zn[i]);
+        if (d <= c3[3]) {
+            gx.push(xn[i]);
+            gy.push(yn[i]);
+            gz.push(zn[i]);
+        }
+    }
+    var trace3 = {
+        x: gx, y: gy, z: gz,
+        mode: 'markers',
+        name: 'Cone 2',
+        marker: {
+            size: 4,
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 0.8
+        },
+        type: 'scatter3d'
+    };
+
+    c4 = [data[2]["X_axis"], data[2]["Y_axis"], data[2]["Z_axis"], data[2]["Radius"]];
+    px = [];
+    py = [];
+    pz = [];
+    for (var i = 0; i < xn.length; i += 1) {
+        d = distance_between_points(c4, xn[i], yn[i], zn[i]);
+        if (d <= c4[3]) {
+            px.push(xn[i]);
+            py.push(yn[i]);
+            pz.push(zn[i]);
+        }
+    }
+    var trace4 = {
+        x: px, y: py, z: pz,
+        mode: 'markers',
+        name: 'Cone 3',
+
+        marker: {
+            size: 4,
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 0.8
+        },
+        type: 'scatter3d'
+    };
+
+
+    var data = [trace, trace2, trace3, trace4];
+    var layout = {
+        autosize: false,
+        width: 500,
+        height: 500,
+        margin: {
+            l: 0,
+            r: 0,
+            b: 0,
+            t: 0
+        },
+        showlegend: true,
+        legend: {
+            x: 1,
+            xanchor: 'right',
+            y: 0.5,
+            font: {
+                family: 'sans-serif',
+                size: 18,
+                color: '#000'
+            },
+        }
+    };
+    fig = Plotly.newPlot('tester', data, layout);
+</script>
+<h3>Note: Click on the Legend to make a Cone Appear OR Disappear</h3>
+{% endblock %}

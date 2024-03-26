@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>Gotta do something!</title>
+    {% endif %}
+    <style>
+        label {
+            font-size: large;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: inline-block;
+        }
+
+        input[type=text],
+        select {
+            width: 200px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: medium;
+            padding: 4px 8px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        .align-right {
+            text-align: right;
+            border: 0;
+        }
+
+        .button2 {
+            background-color: #4CAF50;
+            top: 30%;
+            left: 65%;
+            width: 130px;
+            height: 40px;
+            position: absolute;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        /* Blue */
+        .button3 {
+            background-color: #4CAF50;
+            top: 40%;
+            left: 65%;
+            width: 130px;
+            height: 40px;
+            position: absolute;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        /* Red */
+        .button4 {
+            background-color: #4CAF50;
+            top: 50%;
+            left: 65%;
+            width: 130px;
+            height: 40px;
+            position: absolute;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        /* Gray */
+        .button5 {
+            background-color: #4CAF50;
+            top: 60%;
+            left: 65%;
+            width: 130px;
+            height: 40px;
+            position: absolute;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        h1 {
+            color: #111;
+            font-family: 'Open Sans Condensed', sans-serif;
+            font-size: 64px;
+            font-weight: 700;
+            line-height: 64px;
+            margin: 0 0 0;
+            padding: 20px 30px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+
+        h2 {
+            color: #111;
+            font-family: 'Open Sans Condensed', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 48px;
+            margin: 0 0 24px;
+            padding: 0 30px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        h3 {
+            color: #111;
+            font-family: 'Open Sans Condensed', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 48px;
+            margin: 0 0 24px;
+            padding: 0 30px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        h4 {
+            color: #111;
+            font-family: 'Open Sans Condensed', sans-serif;
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 50px;
+            margin: 0 0 0;
+            padding: 2px 100px;
+            text-align: left;
+        }
+
+        h5 {
+            color: #111;
+            font-family: 'Open Sans Condensed', sans-serif;
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 20px;
+            margin: 0 0 0;
+            padding: 2px 130px;
+            text-align: left;
+        }
+
+        p {
+            color: #111;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 16px;
+            line-height: 28px;
+            margin: 0 0 48px;
+        }
+
+
+        a {
+            color: #990000;
+            text-decoration: none;
+        }
+
+
+        a:hover {
+            text-decoration: underline
+        }
+
+
+        .date {
+            color: #111;
+            display: block;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 16px;
+            position: relative;
+            text-align: center;
+            z-index: 1;
+        }
+
+
+        .date:before {
+            border-top: 1px solid #111;
+            content: "";
+            position: absolute;
+            top: 12px;
+            left: 0;
+            width: 100%;
+            z-index: -1;
+        }
+
+
+        .author {
+            color: #111;
+            display: block;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 16px;
+            padding-bottom: 38px;
+            position: relative;
+            text-align: center;
+            z-index: 1;
+        }
+
+
+        .author:before {
+            border-top: 1px solid #111;
+            content: "";
+            position: absolute;
+            top: 12px;
+            left: 0;
+            width: 100%;
+            z-index: -1;
+        }
+
+
+        .date span,
+
+        .author span {
+            background: #fdfdfd;
+            padding: 0 10px;
+            text-transform: uppercase;
+        }
+
+
+        .line {
+            border-top: 1px solid #111;
+            display: block;
+            margin-top: 60px;
+            padding-top: 50px;
+            position: relative;
+        }
+
+
+
+
+        .read-more:hover {
+            background: #990000;
+            text-decoration: none;
+        }
+
+        .subheader {
+            font-size: 26px;
+            font-weight: 300;
+            color: #ffcc66;
+            margin: 0 0 24px;
+        }
+
+
+
+
+
+        /* Black */
+    </style>
+
+</head>
+
+<body>
+    <h3>
+        Please check the Guidelines for entering text: Click "Help" <br>
+    </h3>
+    <label for="state1"> Enter First Statement: </label> <input type="text" id="state1" name="state1">
+    <label for="state2"> Enter Second Statement: </label> <input type="text" id="state2" name="state2">
+    <label for="conclusion"> Enter Conclusion: </label> <input type="text" id="conclusion" name="conclusion">
+    <!--<label for="steps"> Speed of Animation: </label> <input type="text" id="step" name="steps">   -->
+
+    <div class="slidecontainer">
+        <label for="steps"> Speed of Animation:</label> <input type="range" min="100" max="1500" value="300"
+            class="slider" id="step">
+    </div>
+    <!--<button type="submit" onclick="myfunction();"> Submit </button> -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    <script>
+        document.getElementById("state1").value = "Some S are M";
+        document.getElementById("state2").value = "No M are P";
+        document.getElementById("conclusion").value = "Some S are P";
+        document.getElementById("step").value = "300";
+    </script>
+
+    <script>
+        function myfunction() {
+
+            const state1 = document.getElementById("state1").value;
+            const state2 = document.getElementById("state2").value;
+            const state3 = document.getElementById("conclusion").value;
+            const steps = document.getElementById("step").value;
+            const dict_values = { state1, state2, state3, steps } //Pass the javascript variables to a dictionary.
+            const s = JSON.stringify(dict_values); // Stringify converts a JavaScript object or value to a JSON string
+            console.log(s); // Prints the variables to console window, which are in the JSON format
+
+            $.ajax({
+                url: "test",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(s)
+            });
+
+        }
+
+    </script>
+
+
+    <div style="height: 400px; right:50px; width:60%;" id="tester">
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+
+    <div class="align-right">
+        <a href=animate2><button class="button2" onclick="myfunction();">RUN</button></a>
+        <a href="/"><button class="button4">RELOAD</button></a>
+        <a href="help"><button class="button5">Help</button></a>
+    </div>
+
+</body>
+
+</html>

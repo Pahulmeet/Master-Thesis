@@ -1,0 +1,513 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src='https://cdn.plot.ly/plotly-2.14.0.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js'></script>
+
+
+
+<div id="tester"></div>
+
+<script>
+    //var data = {{ JSON_data | safe }};
+    //var data1 = JSON.parse({{JSON_data}});
+    var jsonString = '{{ JSON_data | tojson | safe }}';
+
+    // Remove the single quotes from the string
+    var jsonWithoutQuotes = jsonString.slice(1, -1);
+
+    // Parse the JSON string into a JavaScript object
+    var data = JSON.parse(jsonWithoutQuotes);
+
+    console.log(data)
+    document.getElementById("state1").value = data[0]['s1'];
+    document.getElementById("state2").value = data[0]['s2'];
+    document.getElementById("conclusion").value = data[0]['s3'];
+    document.getElementById("step").value = data[0]['step1'];
+    console.log(data[0]['loss']);
+    console.log(data[0].loss);
+
+    xn = [];
+    yn = [];
+    zn = [];
+    rho = 1.0;
+
+
+    for (var i = 0.0; i <= 6.282; i += 0.05) {
+        for (var j = 0.0; j <= 3.141; j += 0.05) {
+            x_temp = rho * Math.sin(j) * Math.cos(i);
+            y_temp = rho * Math.sin(j) * Math.sin(i);
+            z_temp = rho * Math.cos(j);
+
+            xn.push(x_temp);
+            yn.push(y_temp);
+            zn.push(z_temp);
+        }
+    }
+
+    var trace = {
+        x: xn, y: yn, z: zn,
+        mode: 'markers',
+        name: 'Sphere',
+        marker: {
+            size: 3, //1.7
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 0.25
+        }, //0.1
+        type: 'scatter3d'
+    };
+
+    function distance_between_points(c, dot_x, dot_y, dot_z) {
+        d = rho * Math.acos((c[0] * dot_x + c[1] * dot_y + c[2] * dot_z) / (rho * rho));
+        return d;
+    }
+
+    c2 = [data[0]["theta1"], data[0]["phi1"], data[0]["alpha1"]];
+    x2 = rho * Math.sin(data[0]["phi1"]) * Math.cos(data[0]["theta1"])
+    y2 = rho * Math.sin(data[0]["phi1"]) * Math.sin(data[0]["theta1"])
+    z2 = rho * Math.cos(data[0]["phi1"])
+    r2 = rho * Math.PI * (data[0]["alpha1"] / 360)
+    c22 = [x2, y2, z2, r2]
+    bx = [];
+    by = [];
+    bz = [];
+
+    bxc = [];
+    byc = [];
+    bzc = [];
+    for (var i = 0; i < xn.length; i += 1) {
+        d = distance_between_points(c22, xn[i], yn[i], zn[i]);
+        if (d <= r2) {
+            bx.push(xn[i]);
+            by.push(yn[i]);
+            bz.push(zn[i]);
+        }
+        else {
+            bxc.push(xn[i]);
+            byc.push(yn[i]);
+            bzc.push(zn[i]);
+        }
+    }
+    var trace2 = {
+        x: bx, y: by, z: bz,
+        mode: 'markers',
+        name: 'S Cone',
+        marker: {
+            size: 8, // 3.8
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 1.0
+        }, //0.8
+        type: 'scatter3d'
+    };
+    var trace2C = {
+        x: bxc, y: byc, z: bzc,
+        mode: 'markers',
+        marker: {
+            size: 8, // 3.8
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 1.0
+        }, //0.8
+        type: 'scatter3d'
+    };
+
+
+    c3 = [data[0]["theta2"], data[0]["phi2"], data[0]["alpha2"]];
+    x3 = rho * Math.sin(data[0]["phi2"]) * Math.cos(data[0]["theta2"])
+    y3 = rho * Math.sin(data[0]["phi2"]) * Math.sin(data[0]["theta2"])
+    z3 = rho * Math.cos(data[0]["phi2"])
+    r3 = rho * Math.PI * (data[0]["alpha2"] / 360)
+    c33 = [x3, y3, z3, r3]
+    gx = [];
+    gy = [];
+    gz = [];
+
+    gxc = [];
+    gyc = [];
+    gzc = [];
+    for (var i = 0; i < xn.length; i += 1) {
+        d = distance_between_points(c33, xn[i], yn[i], zn[i]);
+        if (d <= r3) {
+            gx.push(xn[i]);
+            gy.push(yn[i]);
+            gz.push(zn[i]);
+        }
+        else {
+            gxc.push(xn[i]);
+            gyc.push(yn[i]);
+            gzc.push(zn[i]);
+        }
+    }
+    var trace3 = {
+        x: gx, y: gy, z: gz,
+        mode: 'markers',
+        name: 'M Cone',
+        marker: {
+            size: 8, // 3.8
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 1.0
+        }, //0.8
+        type: 'scatter3d'
+    };
+    var trace3C = {
+        x: gxc, y: gyc, z: gzc,
+        mode: 'markers',
+        marker: {
+            size: 8, // 3.8
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 1.0
+        }, //0.8
+        type: 'scatter3d'
+    };
+
+    c4 = [data[0]["theta3"], data[0]["phi3"], data[0]["alpha3"]];
+    x4 = rho * Math.sin(data[0]["phi3"]) * Math.cos(data[0]["theta3"])
+    y4 = rho * Math.sin(data[0]["phi3"]) * Math.sin(data[0]["theta3"])
+    z4 = rho * Math.cos(data[0]["phi3"])
+    r4 = rho * Math.PI * (data[0]["alpha3"] / 360)
+    c44 = [x4, y4, z4, r4]
+    px = [];
+    py = [];
+    pz = [];
+    pxc = [];
+    pyc = [];
+    pzc = [];
+    for (var i = 0; i < xn.length; i += 1) {
+        d = distance_between_points(c44, xn[i], yn[i], zn[i]);
+        if (d <= r4) {
+            px.push(xn[i]);
+            py.push(yn[i]);
+            pz.push(zn[i]);
+        }
+        else {
+            pxc.push(xn[i]);
+            pyc.push(yn[i]);
+            pzc.push(zn[i]);
+        }
+    }
+    var trace4 = {
+        x: px, y: py, z: pz,
+        mode: 'markers',
+        name: 'P Cone',
+        marker: {
+            size: 8,
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 1.0
+        }, //0.8
+        type: 'scatter3d'
+    };
+    var trace4C = {
+        x: pxc, y: pyc, z: pzc,
+        mode: 'markers',
+        marker: {
+            size: 8,
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 1.0
+        }, //0.8
+        type: 'scatter3d'
+    };
+
+
+    const fruits = [r2, r3, r4]; //const fruits = [r2,r3];
+    fruits.sort();
+    fruits.reverse();
+
+
+    if (data[0]["notS"] == 1 && data[0]["notM"] == 0 && data[0]["notP"] == 0) {
+        trace2.name = "~S"
+        trace2C.name = "S Cone"
+        if (fruits[0] == r2 && fruits[1] == r3) {
+            var data1 = [trace, trace2C, trace2, trace3, trace4]
+        }
+        else if (fruits[0] == r2 && fruits[1] == r4) {
+            var data1 = [trace, trace2C, trace2, trace4, trace3]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r2) {
+            var data1 = [trace, trace2C, trace3, trace2, trace4]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r4) {
+            var data1 = [trace, trace2C, trace3, trace4, trace2]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r2) {
+            var data1 = [trace, trace2C, trace4, trace2, trace3]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r3) {
+            var data1 = [trace, trace2C, trace4, trace3, trace2]
+        }
+    }
+    else if (data[0]["notS"] == 0 && data[0]["notM"] == 2 && data[0]["notP"] == 0) {
+        trace3.name = "~M"
+        trace3C.name = "M Cone"
+        if (fruits[0] == r2 && fruits[1] == r3) {
+            var data1 = [trace, trace3C, trace2, trace3, trace4]
+        }
+        else if (fruits[0] == r2 && fruits[1] == r4) {
+            var data1 = [trace, trace3C, trace2, trace4, trace3]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r2) {
+            var data1 = [trace, trace3C, trace3, trace2, trace4]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r4) {
+            var data1 = [trace, trace3C, trace3, trace4, trace2]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r2) {
+            var data1 = [trace, trace3C, trace4, trace2, trace3]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r3) {
+            var data1 = [trace, trace3C, trace4, trace3, trace2]
+        }
+    }
+    else if (data[0]["notS"] == 0 && data[0]["notM"] == 0 && data[0]["notP"] == 3) {
+        trace4.name = "~P"
+        trace4C.name = "P Cone"
+        //var data1 = [trace, trace4C, trace2, trace3, trace4]
+        if (fruits[0] == r2 && fruits[1] == r3) {
+            var data1 = [trace, trace4C, trace2, trace3, trace4]
+        }
+        else if (fruits[0] == r2 && fruits[1] == r4) {
+            var data1 = [trace, trace4C, trace2, trace4, trace3]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r2) {
+            var data1 = [trace, trace4C, trace3, trace2, trace4]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r4) {
+            var data1 = [trace, trace4C, trace3, trace4, trace2]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r2) {
+            var data1 = [trace, trace4C, trace4, trace2, trace3]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r3) {
+            var data1 = [trace, trace4C, trace4, trace3, trace2]
+        }
+    }
+    else if (data[0]["notS"] == 1 && data[0]["notM"] == 2 && data[0]["notP"] == 0) {
+        trace2.name = "~S"
+        trace2C.name = "S Cone"
+        trace3.name = "~M"
+        trace3C.name = "M Cone"
+        //var data1 = [trace, trace2C, trace3C, trace2, trace3, trace4]
+        if (fruits[0] == r2 && fruits[1] == r3) {
+            var data1 = [trace, trace2C, trace3C, trace2, trace3, trace4]
+        }
+        else if (fruits[0] == r2 && fruits[1] == r4) {
+            var data1 = [trace, trace2C, trace3C, trace2, trace4, trace3]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r2) {
+            var data1 = [trace, trace2C, trace3C, trace3, trace2, trace4]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r4) {
+            var data1 = [trace, trace2C, trace3C, trace3, trace4, trace3]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r2) {
+            var data1 = [trace, trace2C, trace3C, trace4, trace2, trace3]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r3) {
+            var data1 = [trace, trace2C, trace3C, trace4, trace3, trace2]
+        }
+    }
+    else if (data[0]["notS"] == 1 && data[0]["notM"] == 0 && data[0]["notP"] == 3) {
+        trace2.name = "~S"
+        trace2C.name = "S Cone"
+        trace4.name = "~P"
+        trace4C.name = "P Cone"
+        //var data1 = [trace, trace2C, trace4C, trace2, trace3, trace4]
+        if (fruits[0] == r2 && fruits[1] == r3) {
+            var data1 = [trace, trace2C, trace4C, trace2, trace3, trace4]
+        }
+        else if (fruits[0] == r2 && fruits[1] == r4) {
+            var data1 = [trace, trace2C, trace4C, trace2, trace4, trace3]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r2) {
+            var data1 = [trace, trace2C, trace4C, trace3, trace2, trace4]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r4) {
+            var data1 = [trace, trace2C, trace4C, trace3, trace4, trace2]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r2) {
+            var data1 = [trace, trace2C, trace4C, trace4, trace2, trace3]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r3) {
+            var data1 = [trace, trace2C, trace4C, trace4, trace3, trace2]
+        }
+    }
+    else if (data[0]["notS"] == 1 && data[0]["notM"] == 2 && data[0]["notP"] == 3) {
+        trace2.name = "~S"
+        trace2C.name = "S Cone"
+        trace3.name = "~M"
+        trace3C.name = "M Cone"
+        trace4.name = "~P"
+        trace4C.name = "P Cone"
+        //var data1 = [trace, trace2C, trace4C, trace3C, trace2, trace3, trace4]
+        if (fruits[0] == r2 && fruits[1] == r3) {
+            var data1 = [trace, trace2C, trace4C, trace3C, trace2, trace3, trace4]
+        }
+        else if (fruits[0] == r2 && fruits[1] == r4) {
+            var data1 = [trace, trace2C, trace4C, trace3C, trace2, trace4, trace3]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r2) {
+            var data1 = [trace, trace2C, trace4C, trace3C, trace3, trace2, trace4]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r4) {
+            var data1 = [trace, trace2C, trace4C, trace3C, trace3, trace4, trace2]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r2) {
+            var data1 = [trace, trace2C, trace4C, trace3C, trace4, trace2, trace3]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r3) {
+            var data1 = [trace, trace2C, trace4C, trace3C, trace4, trace3, trace2]
+        }
+    }
+    else if (data[0]["notS"] == 0 && data[0]["notM"] == 2 && data[0]["notP"] == 3) {
+        trace3.name = "~M"
+        trace3C.name = "M Cone"
+        trace4.name = "~P"
+        trace4C.name = "P Cone"
+        //var data1 = [trace, trace4C, trace3C, trace2, trace3, trace4]
+        if (fruits[0] == r2 && fruits[1] == r3) {
+            var data1 = [trace, trace4C, trace3C, trace2, trace3, trace4]
+        }
+        else if (fruits[0] == r2 && fruits[1] == r4) {
+            var data1 = [trace, trace4C, trace3C, trace2, trace4, trace3]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r2) {
+            var data1 = [trace, trace4C, trace3C, trace3, trace2, trace4]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r4) {
+            var data1 = [trace, trace4C, trace3C, trace3, trace4, trace2]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r2) {
+            var data1 = [trace, trace4C, trace3C, trace4, trace2, trace3]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r3) {
+            var data1 = [trace, trace4C, trace3C, trace4, trace3, trace2]
+        }
+    }
+    else if (data[0]["notS"] === 0 && data[0]["notM"] === 0 && data[0]["notP"] === 0) {
+        trace2.name = "S Cone"
+        trace3.name = "M Cone"
+        trace4.name = "P Cone"
+        //var data1 = [trace, trace2, trace3, trace4]
+        if (fruits[0] == r2 && fruits[1] == r3) {
+            var data1 = [trace, trace2, trace3, trace4]
+        }
+        else if (fruits[0] == r2 && fruits[1] == r4) {
+            var data1 = [trace, trace2, trace4, trace3]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r2) {
+            var data1 = [trace, trace3, trace2, trace4]
+        }
+        else if (fruits[0] == r3 && fruits[1] == r4) {
+            var data1 = [trace, trace3, trace4, trace2]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r2) {
+            var data1 = [trace, trace4, trace2, trace2]
+        }
+        else if (fruits[0] == r4 && fruits[1] == r3) {
+            var data1 = [trace, trace4, trace3, trace2]
+        }
+    }
+
+
+
+
+    if (data[0].loss === 129) {
+        c7 = [5.75846527, 2.25265445, 80.0];
+        x7 = rho * Math.sin(c7[1]) * Math.cos(c7[0])
+        y7 = rho * Math.sin(c7[1]) * Math.sin(c7[0])
+        z7 = rho * Math.cos(c7[1])
+        r7 = rho * Math.PI * (c7[2] / 360)
+        c77 = [x7, y7, z7, r7]
+        gx = [];
+        gy = [];
+        gz = [];
+        for (var i = 0; i < xn.length; i += 1) {
+            d = distance_between_points(c77, xn[i], yn[i], zn[i]);
+            if (d <= r7) {
+                gx.push(xn[i]);
+                gy.push(yn[i]);
+                gz.push(zn[i]);
+            }
+        }
+        var traceX1 = {
+            x: gx, y: gy, z: gz,
+            mode: 'markers',
+            name: 'S,M,P Cone',
+            marker: {
+                size: 5, // 3.8
+                line: {
+                    color: 'rgba(217, 217, 217, 0.14)',
+                    width: 0.5
+                },
+                opacity: 0.8
+            },
+            type: 'scatter3d'
+        };
+        var data1 = [trace, traceX1];
+    }
+
+    var layout = {
+        margin: {
+            l: 0,
+            r: 0,
+            b: 0,
+            t: 0
+        },
+        //paper_bgcolor:'rgb(0,0,0)',
+        showlegend: true,
+        legend: {
+            x: 1,
+            xanchor: 'right',
+            y: 0.5,
+
+            font: {
+                family: 'sans-serif',
+                size: 28,
+                color: '#000'
+            },
+        }
+    };
+    fig = Plotly.newPlot('tester', data1, layout);
+        //c2 = [data[0]["theta1"], data[0]["phi1"], data[0]["alpha1"]];
+</script>
+
+<div>
+    <p style="font-size: 32px; font-family:Arial, Helvetica, sans-serif; color:#4CAF50;; text-align:center;" id="demo2">
+    </p>
+    <script>
+        if (data[0].loss === 0) {
+            document.getElementById("demo2").innerHTML = "Success - Satisfiable || No. of Iterations : " + data[0].iter1;
+        }
+        else if (data[0].loss === 129) {
+            document.getElementById("demo2").innerHTML = "Success - All Cones coincide || No. of Iterations : " + data[0].iter1;
+        }
+        else {
+            document.getElementById("demo2").innerHTML = "Failure - NOT satisfiable || No. of Iterations : " + data[0].iter1;
+        } 
+    </script>
+    <h3>Note: Click on the Legend to make a Cone Appear OR Disappear</h3>
+</div>
+
+
+{% endblock %}
